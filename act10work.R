@@ -119,7 +119,7 @@ totals_row <- table %>%
 # Bind total row to the table
 final_table <- bind_rows(table, totals_row)
 
-
+# test
 
 
 
