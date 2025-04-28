@@ -4,7 +4,6 @@ library(dplyr)
 # team games played on average. Equalling a minimum of about 502 PAs
 batters_filtered <- batters2019 %>% 
   filter(pa >= 502)
-View(batters_filtered)
 # The numbers used from this summary are mean: 14.435, 3rdQ:26.420, Max:64.657
 # These will be rounded
 summary(batters_filtered)
@@ -12,7 +11,7 @@ summary(batters_filtered)
 # to only include the 3rd quartile
 batters_filtered2 <- batters_filtered %>% 
   filter(runs_all >= 26)
-View(batters_filtered2)
-library(esquisse)
-esquisser(data=batters_filtered,viewer="browser")
-
+# Viewing this data shows that Mike Trout has the most runs, but it is 
+# interesting to see he has the 4th least runs for the heart (down the middle)
+ggplot(batters_filtered2, aes(x=runs_all, y=runs_heart, label = `last_name..first_name`)) +
+  geom_text()
