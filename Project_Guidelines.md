@@ -34,11 +34,11 @@ This project has several key dates that you need to be aware of.
 
 We present the guidelines as a checklist in this file. This means that your team can edit this file and check items off the list by placing an x inside of the square brackets at the start of each item (i.e., [x]). This will help your team keep track of what you've completed and what you have left to do.
 
-- [ ] Read through the Project Guidelines.
-- [ ] Find 1 or 2 other individuals from the same section of Stat 184 who you want to work with and form a team. (We will help you form teams if you do not already have one by the team finalization date for your section.)
-- [ ] Create a repo using this template repo. Name your repo `Sec#_FP_Name1_Name2_Name3` where `Sec#` is your section of Stat184 (i.e., `Sec1`, `Sec2`, `Sec3`, or `Sec4`) and `Name#` is replaced with the names of each team member.
-  - [ ] The owner of the repo should be `Stat184-Spring2025`. 
-- [ ] Make sure that each team member has access to the repo.
+- [x] Read through the Project Guidelines.
+- [x] Find 1 or 2 other individuals from the same section of Stat 184 who you want to work with and form a team. (We will help you form teams if you do not already have one by the team finalization date for your section.)
+- [x] Create a repo using this template repo. Name your repo `Sec#_FP_Name1_Name2_Name3` where `Sec#` is your section of Stat184 (i.e., `Sec1`, `Sec2`, `Sec3`, or `Sec4`) and `Name#` is replaced with the names of each team member.
+  - [x] The owner of the repo should be `Stat184-Spring2025`. 
+- [x] Make sure that each team member has access to the repo.
 - [ ] Come up with a topic and set of research questions your team will explore.
 - [ ] Make a plan for your work. We suggested putting together your work plan ASAP.
 - [ ] Locate appropriate data sources for your project.
@@ -80,7 +80,7 @@ We present the guidelines as a checklist in this file. This means that your team
   - [ ] __Optional:__ Use the repo's Issues system to track and address any problems, core tasks, etc. 
 - [ ] All code should be written according to a Style Guide of your choice. List this Style Guide as a code comment in your first code chunk.
   - __Possible Style Guides:__ There are several different coding Style Guides you can follow; here are a few. [The BOAST Style Guide](https://educationshinyappteam.github.io/Style_Guide/coding.html), [The Tidyverse Style Guide](https://style.tidyverse.org/), [Google's R Style Guide](https://google.github.io/styleguide/Rguide.html)
-- [ ] Sign up for your Work-in-Progress Presentation
+- [x] Sign up for your Work-in-Progress Presentation
 - [ ] Complete your Work-in-Progress Presentation (details below)
 - [ ] Finalize your work and submit your report as a __PDF__ to the appropriate submission portal in Canvas by the deadline.
   - [ ] As a comment on your submission, include a link to your team's project repo.
