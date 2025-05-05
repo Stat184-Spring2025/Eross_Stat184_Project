@@ -1,17 +1,35 @@
-batters2019 <- `2019.batters`
+library(tidyverse)
+library(rvest)
 library(dplyr)
-# According to mlb.com a qualified hitter must have 3.1 plate appearances per 
-# team games played on average. Equalling a minimum of about 502 PAs
-batters_filtered <- batters2019 %>% 
-  filter(pa >= 502)
-# The numbers used from this summary are mean: 14.435, 3rdQ:26.420, Max:64.657
-# These will be rounded
-summary(batters_filtered)
-# Since we are investigating the best hitters, we will narrow the data down 
-# to only include the 3rd quartile
-batters_filtered2 <- batters_filtered %>% 
-  filter(runs_all >= 26)
-# Viewing this data shows that Mike Trout has the most runs, but it is 
-# interesting to see he has the 4th least runs for the heart (down the middle)
-ggplot(batters_filtered2, aes(x=runs_all, y=runs_heart, label = `last_name..first_name`)) +
-  geom_text()
+SSNLRawList <- read_html(x = "https://www.baseball-reference.com/awards/silver_slugger_nl.shtml") %>%
+  html_elements(css = "table") %>%
+  html_table()
+SSNLData <- bind_rows(SSNLRawList)
+SSNLData <- SSNLData %>%
+  mutate(Year = str_extract(`Year & Common`, "^\\d{4}"))
+SSNL2019 <- SSNLData %>%
+  filter(Year == "2019")
+SSALRawList <- read_html(x = "https://www.baseball-reference.com/awards/silver_slugger_al.shtml") %>%
+  html_elements(css = "table") %>%
+  html_table()
+SSALData <- bind_rows(SSALRawList)
+SSALData <- SSALData %>%
+  mutate(Year = str_extract(`Year & Common`, "^\\d{4}"))
+SSAL2019 <- SSALData %>%
+  filter(Year == "2019")
+SSNL2019 <- SSNL2019 %>%
+  mutate(League = "NL")
+SSAL2019 <- SSAL2019 %>%
+  mutate(League = "AL")
+SS2019 <- bind_rows(SSNL2019, SSAL2019)
+SS2019_long <- SS2019 %>%
+  pivot_longer(
+    cols = c("P", "C", "1B", "2B", "3B", "SS", "OF...7", "OF...8", "OF...9", "OF...10", "DH", "Utility"),
+    names_to = "Position",
+    values_to = "Player"
+  ) %>%
+  filter(Player != "") %>%
+  mutate(Position = as.character(Position),   
+         Position = ifelse(grepl("^OF", Position), "OF", Position)) %>% 
+  select(Year, League, Player, Position)
+View(SS2019_long)
