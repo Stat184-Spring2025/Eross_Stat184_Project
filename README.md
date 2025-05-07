@@ -22,7 +22,7 @@ More information about the data sets and sources are included under the introduc
 
 ## Authors
 
-This was a full group collaboration project, names and emails listed below:
-Andrew Eross - aje5706@psu.edu
-Owen Wassel - orw5074@psu.edu
-Nick McConnell - nam6087@psu.edu
+This was a full group collaboration project, names and emails listed here:
+Andrew Eross - aje5706@psu.edu,
+Owen Wassel - orw5074@psu.edu,
+Nick McConnell - nam6087@psu.edu.
