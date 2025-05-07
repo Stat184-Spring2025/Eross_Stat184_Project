@@ -1,7 +1,7 @@
 # Load ggplot2 library for graph making
 library(ggplot2)
 # adjust data name for simplicity
-batters <- merged_data
+batters <- read.csv("merged_silver_sluggers_2019.csv")
 # Graph displaying relationship between total runs and waste zone runs
 ggplot(batters) +
   aes(x = runs_all, y = runs_waste, label = Player) +

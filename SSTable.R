@@ -42,7 +42,7 @@ SS2019_long <- SS2019 %>%
          Position = ifelse(grepl("^OF", Position), "OF", Position)) %>% 
   select(Year, League, Player, Position)
 # Load 2019 batters data from baseball savant
-batters2019 <- `2019.batters`
+batters2019 <- read.csv("C:\\Users\\owass\\OneDrive - The Pennsylvania State University\\Documents\\GitHub\\Sec1_FP_Andrew_Owen_Nick\\2019-batters.csv")
 # Rename player column for consistency and ease when merging data frames
 colnames(batters2019)[colnames(batters2019) == "last_name..first_name"] <- "Player"
 # Drop unnecessary columns
@@ -75,3 +75,5 @@ merged_data <- merged_data %>%
   select(-c(year))
 # Create table to show relationships
 kable(merged_data)
+write.csv(merged_data, "merged_silver_sluggers_2019.csv", row.names = FALSE)
+
