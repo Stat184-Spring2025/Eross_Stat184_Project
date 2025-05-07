@@ -476,7 +476,11 @@ merged_data <- inner_join(SS2019_long, batters2019, by = "Player")
 merged_data <- merged_data %>%
   select(-c(year))
 # Create table to show relationships
-print(merged_data)
+library(kableExtra)
+kable(merged_data, format = "latex", booktabs = TRUE, longtable = TRUE) %>%
+  kable_styling(font_size = 7, latex_options = c("striped", "hold_position")) %>%
+  column_spec(1, width = "1cm") %>%
+  column_spec(2, width = "1cm")
 ```
 Now that we have a general idea of how many runs each silver slugger has, let's investigate each zone to see where the best hitters get most of their runs. Below are 4 graphs depicting this. Notice that Mike Trout has the most runs total (thus he is farthest right on the graph) but is lower when comparing total runs to heart runs. Meaning he gets most of his runs elsewhere.
 ```{r}
