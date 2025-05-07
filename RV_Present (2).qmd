@@ -397,10 +397,9 @@ ggplot(Correlation_Long, aes(x = Var2, y = Var1, fill = value)) +
 ```
 Given each silver slugger from the AL and NL, we want to see what each player's run value was. Here is a table that displays that information:
 ```{r}
+#| echo: false
 #| warning: false
-#| results: hide
 #| message: false
-#| fig-show: hide
 # Load required libraries
 library(tidyverse)
 library(rvest)
@@ -477,14 +476,16 @@ merged_data <- inner_join(SS2019_long, batters2019, by = "Player")
 merged_data <- merged_data %>%
   select(-c(year))
 # Create table to show relationships
-kable(merged_data)
+print(merged_data)
 ```
 Now that we have a general idea of how many runs each silver slugger has, let's investigate each zone to see where the best hitters get most of their runs. Below are 3 graphs depicting this. Notice that Mike Trout has the most runs total (thus he is farthest right on the graph) but is lower when comparing total runs to heart runs. Meaning he gets most of his runs elsewhere.
 ```{r}
+#| echo: false
 #| warning: false
-#| results: hide
 #| message: false
-#| fig-show: hide
+#| fig-width: 10
+#| fig-height: 6
+#| fig-align: "center"
 # Load ggplot2 library for graph making
 library(ggplot2)
 # adjust data name for simplicity
