@@ -53,53 +53,7 @@ As mentioned above, our *primary data set* is the run value data that comes from
 
 Because we are pulling the data from multiple data sources and combining into other data frames, several data wrangling steps must be taken. We downloaded all of the Baseball Savant run value and Baseball Reference voting data. Some important steps/ideas in the data wrangling process were as followed:
 
-### Headers
-
-Extract the headers separately from the Baseball Reference cases. This ensures later we can better tidy the data by combining a separate header data frame to the rest of the data frame.
-
-### Tidying
-
-In each table, make sure that column names/data are consistent. The way names appeared were different in both, so it was useful to separate names in a first and last name column. Also, rename columns to relevant, understandable names. It was also important to rename any values that contained accents, as loading the data frame would mess up those cell's formatting.
-
-### Filtering
-
-It is important to filter out all of the pitchers who received award votes since they do not carry meaningful offensive data. We are just comparing hitters with their voting results.
-
-### Merging
-
-An inner join was necessary on First_Name, Last_Name to combine the data frames to include run value data with voting data. Since we only wanted data on those receiving votes, only run vale data would be added to the names in the voting data frame.
-
-## Reproducibility
-
-This process should be reproducible since it had to be repeated for data frame in both conferences. Avoiding "hard-coding" ensures that we are able to quickly change our code to produce other data frames.
-
-# FAIR Principles
-
-Our data set must follow the FAIR principles so to ensure our data is trustworthy and valid to use.
-
-## Findable
-
-Both data sets come from very well known baseball data pages. A quick google search of run value and 2019 award voting will take a user to these online data sets.
-
-## Accessible
-
-Downloading the data is made very easy via the tables' settings/options on the website. This allows us to easily upload the data to our repo for our use.
-
-## Interoperable
-
-For the most part, column names were very easy to understand what data came with it, and if not, we renamed those columns. The .csv files we downloaded from the sites were very easy to read into an R file, and understandable once doing so.
-
-## Reusable
-
-Detailing our process should make the wrangling and EDA very reproducible for other researchers. There is adequate information on the structures of the data sets both in our documentation and from the website so other can use them for their own research.
-
-# CARE Principles
-
-In most cases, analyzing professional sports data follows CARE principles because it is objective analysis on public data meant to study the highlights of the sport. Our research does so, uplifting the positives and accomplishments of baseball measurables. We understand we do not own any of these public data sets, and we provide proper reference information
-
-# Exploratory Data Analysis
-
-```{r}
+```{r fig-nl-mvp-rv}
 #| echo: false
 #| warning: false
 #| message: false
@@ -161,72 +115,6 @@ NL_MVP <- read.table(
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-cap: "Run Value vs NL MVP Vote Points"
-
-#create plot for run value vs NL MVP vote points
-# plotting from NL MVP data frame
-# x axis is run value (all zones)
-# y axis is vote points
-ggplot(NL_MVP, aes(x = runs_all, y = Vote.Pts)) +
-  # graph dots as points, light red for run value, size 3
-  # note: not including names for readability
-  geom_point(color = "#FF474C", size = 3) +
-  # create line of best fit/regression line, light gray
-  geom_smooth(method = "lm", se = FALSE, color = "gray") +
-  # x, y, and graph labels
-  labs(
-    title = "NL MVP Vote Points vs Offensive Run Value",
-    x = "Offensive Run Value (All)",
-    y = "NL MVP Vote Points"
-  ) +
-  # minimize background to plain
-  theme_minimal()
-
-# create model to calculate r squared value for vote points vs run value from nl mvp
-model_nlmvp_rv <- lm(Vote.Pts ~ runs_all, data = NL_MVP)
-
-# calculate r squared value from model
-rsq_nlmvp_rv<- summary(model_nlmvp_rv)$r.squared
-
-# I researched how to do this since it was not taught in course
-
-
-```
-The R-squared value for the NL MVP model using runs created is `r round(rsq_nlmvp_rv, 3)`.
-
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| fig-cap: "WAR vs NL MVP Vote Points"
-
-# similar approach to above, just now graphing for war vs vote points
-# graph war vs vote points from NL MVP data set
-ggplot(NL_MVP, aes(x = WAR, y = Vote.Pts)) +
-  #color the points, will use a light blue for WAR
-  geom_point(color = "#87CEEB", size = 3) +
-  #create a regression line/line of best fit, color a light grat
-  geom_smooth(method = "lm", se = FALSE, color = "gray") +
-  # graph and axes labels
-  labs(
-    title = "NL MVP Vote Points vs WAR",
-    x = "WAR",
-    y = "NL MVP Vote Points"
-  ) +
-  #minimize background to white
-  theme_minimal()
-
-#create model to get r squared value between vote and war
-model_nlmvp_war <- lm(Vote.Pts ~ WAR, data = NL_MVP)
-# calculate r squared value with model
-rsq_nlmvp_war<- summary(model_nlmvp_war)$r.squared
-
-```
-The R-squared value for the NL MVP model using WAR is `r round(rsq_nlmvp_war, 3)`.
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
 
 #load packages (already loaded above)
 #library(tidyverse)
@@ -268,6 +156,96 @@ AL_MVP <- read.table(
   #drop unnecessary columns
   select(-player_id, -year, -pitches, -team_id)
 ```
+### Headers
+
+Extract the headers separately from the Baseball Reference cases. This ensures later we can better tidy the data by combining a separate header data frame to the rest of the data frame.
+
+### Tidying
+
+In each table, make sure that column names/data are consistent. The way names appeared were different in both, so it was useful to separate names in a first and last name column. Also, rename columns to relevant, understandable names. It was also important to rename any values that contained accents, as loading the data frame would mess up those cell's formatting.
+
+### Filtering
+
+It is important to filter out all of the pitchers who received award votes since they do not carry meaningful offensive data. We are just comparing hitters with their voting results.
+
+### Merging
+
+An inner join was necessary on First_Name, Last_Name to combine the data frames to include run value data with voting data. Since we only wanted data on those receiving votes, only run vale data would be added to the names in the voting data frame.
+
+## Reproducibility
+
+This process should be reproducible since it had to be repeated for data frame in both conferences. Avoiding "hard-coding" ensures that we are able to quickly change our code to produce other data frames.
+
+# FAIR Principles
+
+Our data set must follow the FAIR principles so to ensure our data is trustworthy and valid to use.
+
+## Findable
+
+Both data sets come from very well known baseball data pages. A quick google search of run value and 2019 award voting will take a user to these online data sets.
+
+## Accessible
+
+Downloading the data is made very easy via the tables' settings/options on the website. This allows us to easily upload the data to our repo for our use.
+
+## Interoperable
+
+For the most part, column names were very easy to understand what data came with it, and if not, we renamed those columns. The .csv files we downloaded from the sites were very easy to read into an R file, and understandable once doing so.
+
+## Reusable
+
+Detailing our process should make the wrangling and EDA very reproducible for other researchers. There is adequate information on the structures of the data sets both in our documentation and from the website so other can use them for their own research.
+
+# CARE Principles
+
+In most cases, analyzing professional sports data follows CARE principles because it is objective analysis on public data meant to study the highlights of the sport. Our research does so, uplifting the positives and accomplishments of baseball measurables. We understand we do not own any of these public data sets, and we provide proper reference information
+
+# Exploratory Data Analysis
+
+To first tackle how well run value is related to MVP voting, we will plot a player's run value with their MVP vote points. Some context on how voting works- since MVP is conference specific, there is an award for both leagues. Therefore, we will be running this twice, one for each conference. Also, the y-axis is referenced as "Vote Points" because the way voting works is that each voter (30 in total) gets to vote for a 1st place finisher, 2nd place finisher, third place finisher, all the way down to a 10th place finisher. A player who is picked in first place gets 14 points, second place gets 9, 8 for third, and all the way down to 1 for 10th.
+
+The number of vote points is summed for each player, and the player with the most points is the winner.
+
+The @fig-nl-mvp-rv, plots the player's run value vs vote points for the NL (National League). We see a pretty strong, positive correlation between vote points and run value. Our predictions were correct, in that players with higher run values are more likely to get more votes for the award. This of course makes sense, as the league's most valuable players should be great offensive players.
+
+The points represent each player who received MVP votes. Originally, the player's name was listed above the point, but this was changed to improve readability.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: "Run Value vs NL MVP Vote Points"
+
+#create plot for run value vs NL MVP vote points
+# plotting from NL MVP data frame
+# x axis is run value (all zones)
+# y axis is vote points
+ggplot(NL_MVP, aes(x = runs_all, y = Vote.Pts)) +
+  # graph dots as points, light red for run value, size 3
+  # note: not including names for readability
+  geom_point(color = "#FF474C", size = 3) +
+  # create line of best fit/regression line, light gray
+  geom_smooth(method = "lm", se = FALSE, color = "gray") +
+  # x, y, and graph labels
+  labs(
+    title = "NL MVP Vote Points vs Offensive Run Value",
+    x = "Offensive Run Value (All)",
+    y = "NL MVP Vote Points"
+  ) +
+  # minimize background to plain
+  theme_minimal()
+
+# create model to calculate r squared value for vote points vs run value from nl mvp
+model_nlmvp_rv <- lm(Vote.Pts ~ runs_all, data = NL_MVP)
+
+# calculate r squared value from model
+rsq_nlmvp_rv<- summary(model_nlmvp_rv)$r.squared
+
+# I researched how to do this since it was not taught in course
+
+
+```
+The line of best fit is also graphed, with a calculated R squared value of **`r round(rsq_nlmvp_rv, 3)`**. 
 
 ```{r}
 #| echo: false
@@ -298,6 +276,40 @@ model_almvp_rv <- lm(Vote.Pts ~ runs_all, data = AL_MVP)
 #calculate r squared value using model
 rsq_almvp_rv<- summary(model_almvp_rv)$r.squared
 ```
+
+We repeated this process for the AL MVP vote getters, with the similar figure shown. This produced an R squared value of **`r round(rsq_almvp_rv, 3)`**. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: "WAR vs NL MVP Vote Points"
+
+# similar approach to above, just now graphing for war vs vote points
+# graph war vs vote points from NL MVP data set
+ggplot(NL_MVP, aes(x = WAR, y = Vote.Pts)) +
+  #color the points, will use a light blue for WAR
+  geom_point(color = "#87CEEB", size = 3) +
+  #create a regression line/line of best fit, color a light grat
+  geom_smooth(method = "lm", se = FALSE, color = "gray") +
+  # graph and axes labels
+  labs(
+    title = "NL MVP Vote Points vs WAR",
+    x = "WAR",
+    y = "NL MVP Vote Points"
+  ) +
+  #minimize background to white
+  theme_minimal()
+
+#create model to get r squared value between vote and war
+model_nlmvp_war <- lm(Vote.Pts ~ WAR, data = NL_MVP)
+# calculate r squared value with model
+rsq_nlmvp_war<- summary(model_nlmvp_war)$r.squared
+
+```
+The R-squared value for the NL MVP model using WAR is `r round(rsq_nlmvp_war, 3)`.
+
+
 The R-squared value for the AL MVP model using run value is `r round(rsq_almvp_rv, 3)`.
 ```{r}
 #| echo: false
