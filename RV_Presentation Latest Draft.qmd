@@ -1,6 +1,7 @@
 ---
 title: "Comparing MLB Run Value and Awards"
 author: "Andrew Eross, Owen Wassel, Nick McConnell"
+date: 05/07/2025
 format: pdf
 ---
 
