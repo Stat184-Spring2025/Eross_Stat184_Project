@@ -16,7 +16,7 @@ Readers should pay most attention to the final pdf file for all of their informa
 
 ## Data Sources and Acknowledgements
 
-Our data sets come from Baseball Savant (MLB's Statcast data website) and Baseball Reference (highly trusted baseball data page). Descriptions aboit various statistics were drawn from MLB.com and basebavant.com. Most of our analysis was however internally drawn out, following the structure in the project guidelines.
+Our data sets come from Baseball Savant (MLB's Statcast data website) and Baseball Reference (highly trusted baseball data page). Descriptions about various statistics were drawn from MLB.com and basebavant.com. Most of our analysis was however internally drawn out, following the structure in the project guidelines. All data comes from the 2019 MLB regular season.
 
 More information about the data sets and sources are included under the introduction and data provenance sections in the final qmd and pdf files. 
 
