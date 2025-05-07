@@ -124,7 +124,7 @@ NL_MVP <- read.table(
 
 # Read AL MVP header, which is the second row of the data set from secondary data set
 AL_MVP_Header <- read.table(
-  file = "2019ALMVP.xls.csv",
+  file = "2019ALMVP.csv",
   header = FALSE,
   sep = ",",
   skip = 1,
@@ -133,7 +133,7 @@ AL_MVP_Header <- read.table(
 # create full al mvp data set
 # again read in table from bbref, skip headers
 AL_MVP <- read.table(
-  file = "2019ALMVP.xls.csv",
+  file = "2019ALMVP.csv",
   header = FALSE,
   sep = ",",
   skip = 2,
