@@ -4,7 +4,7 @@ This repo is made to run exploratory data analysis on MLB stats and awards. Our 
 
 ## Overview
 
-This repo digs in to what powers the decision-making behind what batters win MLB awards. There has been a lot of discussion on if adavanced stats like Run Value matter when selecting hitters for awards. Additionally, this project helps derive what goes into run value calculations, and compares run value's importance in predicting awards. If readers are curious what players are likely to win offensive awards, this repo gives insight on what players are most likely to win given their advanced metrics.
+This repo digs into what powers the decision-making behind what batters win MLB awards. There has been a lot of discussion on if adavanced stats like Run Value matter when selecting hitters for awards. Additionally, this project helps derive what goes into run value calculations, and compares run value's importance in predicting awards. If readers are curious what players are likely to win offensive awards, this repo gives insight on what players are most likely to win given their advanced metrics.
 
 ### Interesting Insight
 
