@@ -53,7 +53,7 @@ As mentioned above, our *primary data set* is the run value data that comes from
 
 Because we are pulling the data from multiple data sources and combining into other data frames, several data wrangling steps must be taken. We downloaded all of the Baseball Savant run value and Baseball Reference voting data. Some important steps/ideas in the data wrangling process were as followed:
 
-```{r fig-nl-mvp-rv}
+```{r}
 #| echo: false
 #| warning: false
 #| message: false
@@ -539,6 +539,8 @@ ggplot(batters) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+# Answering Secondary Question Using RV
+
 # Code Appendix
 
 ```{r}
