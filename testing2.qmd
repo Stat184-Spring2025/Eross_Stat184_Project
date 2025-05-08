@@ -1,7 +1,6 @@
 ---
 title: "Comparing MLB Run Value and Awards"
 author: "Andrew Eross, Owen Wassel, Nick McConnell"
-date: 05/07/2025
 format: pdf
 ---
 
@@ -54,7 +53,7 @@ As mentioned above, our *primary data set* is the run value data that comes from
 
 Because we are pulling the data from multiple data sources and combining into other data frames, several data wrangling steps must be taken. We downloaded all of the Baseball Savant run value and Baseball Reference voting data. Some important steps/ideas in the data wrangling process were as followed:
 
-```{r}
+```{r fig-nl-mvp-rv}
 #| echo: false
 #| warning: false
 #| message: false
@@ -207,7 +206,7 @@ To first tackle how well run value is related to MVP voting, we will plot a play
 
 The number of vote points is summed for each player, and the player with the most points is the winner.
 
-The @fig-nl-mvp-rv, plots the player's run value vs vote points for the NL (National League). We see a pretty strong, positive correlation between vote points and run value. Our predictions were correct, in that players with higher run values are more likely to get more votes for the award. This of course makes sense, as the league's most valuable players should be great offensive players.
+**Figure 1** plots the player's run value vs vote points for the NL (National League). We see a pretty strong, positive correlation between vote points and run value. Our predictions were correct, in that players with higher run values are more likely to get more votes for the award. This of course makes sense, as the league's most valuable players should be great offensive players.
 
 The points represent each player who received MVP votes. Originally, the player's name was listed above the point, but this was changed to improve readability.
 
@@ -279,6 +278,11 @@ rsq_almvp_rv<- summary(model_almvp_rv)$r.squared
 ```
 
 We repeated this process for the AL MVP vote getters, with the similar figure shown. This produced an R squared value of **`r round(rsq_almvp_rv, 3)`**. 
+
+
+To better compare the efficacy of the run value in predicting a player's likelihood of winning MVP, we should compare the R squared value with the R squared value of plotting vote points with another statistic. A very popular statistic used in measuring the most valuable player is WAR (wins above replacements), a stat found on Baseball Reference (available in the tables we already wrangled). WAR is similar to run value, but instead calculates the wins a player should create for their team above the average player. A key difference in WAR and run value is that WAR just inputs observational stats, and does not include Statcast data. Also, WAR includes data on fielding and running, whereas the run value we use is only calculated when the batter is at the plate.
+
+The following two graphs compare vote points with WAR, and similarly plot a line of best fit. Again, we will examine NL hitters separately from AL hitters.
 
 ```{r}
 #| echo: false
@@ -445,7 +449,7 @@ SS2019_long <- SS2019 %>%
          Position = ifelse(grepl("^OF", Position), "OF", Position)) %>% 
   select(Year, League, Player, Position)
 # Load 2019 batters data from baseball savant
-batters2019 <- read.csv("2019-batters.csv")
+batters2019 <- read.csv("C:\\Users\\owass\\OneDrive - The Pennsylvania State University\\Documents\\GitHub\\Sec1_FP_Andrew_Owen_Nick\\2019-batters.csv")
 # Rename player column for consistency and ease when merging data frames
 colnames(batters2019)[colnames(batters2019) == "last_name..first_name"] <- "Player"
 # Drop unnecessary columns
@@ -477,11 +481,7 @@ merged_data <- inner_join(SS2019_long, batters2019, by = "Player")
 merged_data <- merged_data %>%
   select(-c(year))
 # Create table to show relationships
-library(kableExtra)
-kable(merged_data, format = "latex", booktabs = TRUE, longtable = TRUE) %>%
-  kable_styling(font_size = 7, latex_options = c("striped", "hold_position")) %>%
-  column_spec(1, width = "1cm") %>%
-  column_spec(2, width = "1cm")
+print(merged_data)
 ```
 Now that we have a general idea of how many runs each silver slugger has, let's investigate each zone to see where the best hitters get most of their runs. Below are 4 graphs depicting this. Notice that Mike Trout has the most runs total (thus he is farthest right on the graph) but is lower when comparing total runs to heart runs. Meaning he gets most of his runs elsewhere.
 ```{r}
@@ -540,130 +540,13 @@ ggplot(batters) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-# Answering Secondary Question Using RV
-MVP Candidates and Run Value For Each Zone
-
-
-This graph below shows the 2019 NL and AL MVP candidates (excluding pitchers) and their run value for each zone.
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-#| fig-height: 9
-
-batters_df <- read_csv("https://raw.githubusercontent.com/Stat184-Spring2025/Sec1_FP_Andrew_Owen_Nick/main/2019-batters.csv")
-
-mvp_candidates <- c(
-  "Bellinger, Cody", "Yelich, Christian", "Rendon, Anthony", "Marte, Ketel", "Acuña Jr., Ronald",
-  "Arenado, Nolan", "Alonso, Pete", "Freeman, Freddie", "Soto, Juan", "Donaldson, Josh",
-  "Trout, Mike", "Bregman, Alex", "Semien, Marcus", "LeMahieu, DJ", "Bogaerts, Xander",
-  "Chapman, Matt", "Springer, George", "Betts, Mookie", "Cruz, Nelson", "Devers, Rafael"
-)
-
-mvp_long <- batters_df %>%
-  filter(`last_name, first_name` %in% mvp_candidates) %>%
-  select(`last_name, first_name`, runs_heart, runs_shadow, runs_chase, runs_waste) %>%
-  pivot_longer(cols = starts_with("runs_"),
-               names_to = "zone",
-               values_to = "runs") %>%
-  mutate(zone = gsub("runs_", "", zone))
-ggplot(mvp_long, aes(x = reorder(`last_name, first_name`, runs), y = runs, fill = zone)) +
-  geom_col(position = position_dodge2(preserve = "single", padding = 0.1), width = 0.75) +
-  coord_flip() +
-  labs(
-    title = "MVP Candidates - Run Value by Zone (2019)",
-    x = "Player",
-    y = "Run Value",
-    fill = "Zone"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    legend.position = "top",
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.title = element_text(size = 13),
-    axis.text.y = element_text(size = 11, margin = margin(r = 10)),
-    axis.text.x = element_text(size = 11),
-    legend.title = element_text(size = 12),
-    legend.text = element_text(size = 11)
-  )
-
-```
-#Top Hitters In Chase and Waste
-```{r, include= FALSE, echo= FALSE}
-#| warning: false
-#| results: hide
-#| message: false
-#| fig-show: hide
-
-# Load libraries
-library(dplyr)
-library(readr)
-library(knitr)
-library(kableExtra)
-
-# Read the CSV file (use raw GitHub link or local file path if needed)
-batters_df <- read_csv("https://raw.githubusercontent.com/Stat184-Spring2025/Sec1_FP_Andrew_Owen_Nick/main/2019-batters.csv")
-
-# List of 2019 MVP candidate names (as they appear in CSV)
-mvp_candidates <- c(
-  "Bellinger, Cody", "Yelich, Christian", "Rendon, Anthony", "Marte, Ketel", "Acuña Jr., Ronald",
-  "Arenado, Nolan", "Alonso, Pete", "Freeman, Freddie", "Soto, Juan", "Donaldson, Josh",
-  "Trout, Mike", "Bregman, Alex", "Semien, Marcus", "LeMahieu, DJ", "Bogaerts, Xander",
-  "Chapman, Matt", "Springer, George", "Betts, Mookie", "Cruz, Nelson", "Devers, Rafael"
-)
-
-# List of 2019 Silver Sluggers (as they appear in CSV)
-silver_sluggers <- c(
-  "Greinke, Zack", "Realmuto, J.T.", "Freeman, Freddie", "Albies, Ozzie", "Rendon, Anthony", "Story, Trevor",
-  "Bellinger, Cody", "Yelich, Christian", "Acuña Jr., Ronald",
-  "Garver, Mitch", "Santana, Carlos", "LeMahieu, DJ", "Bregman, Alex", "Bogaerts, Xander",
-  "Betts, Mookie", "Trout, Mike", "Springer, George", "Cruz, Nelson"
-)
-
-#add flags for MVP and Silver Slugger
-batters_df <- batters_df %>%
-  mutate(
-    `Top Ten MVP` = `last_name, first_name` %in% mvp_candidates,
-    `Silver Slugger` = `last_name, first_name` %in% silver_sluggers
-  )
-
-# Top 10 CHASE zone hitters
-top_chase <- batters_df %>%
-  select(`Last, First` = `last_name, first_name`, runs_chase, runs_all, `Top Ten MVP`, `Silver Slugger`) %>%
-  arrange(desc(runs_chase)) %>%
-  slice_head(n = 10)
-
-# Top 10 WASTE zone hitters
-top_waste <- batters_df %>%
-  select(`Last, First` = `last_name, first_name`, runs_waste, runs_all, `Top Ten MVP`, `Silver Slugger`) %>%
-  arrange(desc(runs_waste)) %>%
-  slice_head(n = 10)
-```
-
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-
-kable(top_chase, caption = "Top 10 Hitters in CHASE Zone") %>%
-  kable_styling(full_width = FALSE, position = "left", font_size = 12) %>%
-  column_spec(1:5, extra_css = "padding-right: 20px;")
-
-kable(top_waste, caption = "Top 10 Hitters in WASTE Zone") %>%
-  kable_styling(full_width = FALSE, position = "left", font_size = 12) %>%
-  column_spec(1:5, extra_css = "padding-right: 20px;")
-
-
-
-```
-
 # Code Appendix
 
 ```{r}
-#| message: false
 #| warning: false
-#| fig-show: hide
 #| results: hide
+#| message: false
+#| fig-show: hide
 
 # ----DATA WRANGLING FOR NL MVP RUN VALUE DATA FRAME -------
 
@@ -919,7 +802,7 @@ SS2019_long <- SS2019 %>%
          Position = ifelse(grepl("^OF", Position), "OF", Position)) %>% 
   select(Year, League, Player, Position)
 # Load 2019 batters data from baseball savant
-batters2019 <- read_csv("https://raw.githubusercontent.com/Stat184-Spring2025/Sec1_FP_Andrew_Owen_Nick/main/2019-batters.csv")
+batters2019 <- read.csv("C:\\Users\\owass\\OneDrive - The Pennsylvania State University\\Documents\\GitHub\\Sec1_FP_Andrew_Owen_Nick\\2019-batters.csv")
 # Rename player column for consistency and ease when merging data frames
 colnames(batters2019)[colnames(batters2019) == "last_name..first_name"] <- "Player"
 # Drop unnecessary columns
@@ -1003,144 +886,3 @@ ggplot(batters) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-
-MVP Candidates and RV For Each Zone
-```{r}
-#| warning: false
-#| results: hide
-#| message: false
-#| fig-show: hide
-
-# Load required libraries
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(readr)
-
-# Load the data
-
-batters_df <- read_csv("https://raw.githubusercontent.com/Stat184-Spring2025/Sec1_FP_Andrew_Owen_Nick/main/2019-batters.csv")
-
-# MVP candidates
-mvp_vote_order <- c(
-  "Bellinger, Cody",
-  "Trout, Mike",
-  "Yelich, Christian",
-  "Bregman, Alex",
-  "Rendon, Anthony",
-  "Semien, Marcus",
-  "Marte, Ketel",
-  "LeMahieu, DJ",
-  "Acuña Jr., Ronald",
-  "Bogaerts, Xander",
-  "Arenado, Nolan",
-  "Alonso, Pete",
-  "Freeman, Freddie",
-  "Chapman, Matt",
-  "Springer, George",
-  "Betts, Mookie",
-  "Cruz, Nelson",
-  "Soto, Juan",
-  "Devers, Rafael",
-  "Donaldson, Josh"
-)
-
-
-# Filter and reshape
-mvp_long <- batters_df %>%
-  filter(`last_name, first_name` %in% mvp_candidates) %>%
-  select(`last_name, first_name`, runs_heart, runs_shadow, runs_chase, runs_waste) %>%
-  pivot_longer(cols = starts_with("runs_"),
-               names_to = "zone",
-               values_to = "runs") %>%
-  mutate(zone = gsub("runs_", "", zone))
-
-# Plot with adjusted spacing and bar width
-ggplot(mvp_long, aes(x = reorder(`last_name, first_name`, runs), y = runs, fill = zone)) +
-  geom_col(position = position_dodge2(preserve = "single", padding = 0.1), width = 0.75) +
-  coord_flip() +
-  labs(
-    title = "MVP Candidates - Run Value by Zone (2019)",
-    x = "Player",
-    y = "Run Value",
-    fill = "Zone"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    legend.position = "top",
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.title = element_text(size = 13),
-    axis.text.y = element_text(size = 11, margin = margin(r = 10)),
-    axis.text.x = element_text(size = 11),
-    legend.title = element_text(size = 12),
-    legend.text = element_text(size = 11)
-  )
-
-
-
-```
-
-Top 10 In Chase and Waste
-```{r}
-#| warning: false
-#| results: hide
-#| message: false
-#| fig-show: hide
-
-# Load libraries
-library(dplyr)
-library(readr)
-library(knitr)
-library(kableExtra)
-
-# Read the CSV file (use raw GitHub link or local file path if needed)
-batters_df <- read_csv("https://raw.githubusercontent.com/Stat184-Spring2025/Sec1_FP_Andrew_Owen_Nick/main/2019-batters.csv")
-
-# List of 2019 MVP candidate names (as they appear in CSV)
-mvp_candidates <- c(
-  "Bellinger, Cody", "Yelich, Christian", "Rendon, Anthony", "Marte, Ketel", "Acuña Jr., Ronald",
-  "Arenado, Nolan", "Alonso, Pete", "Freeman, Freddie", "Soto, Juan", "Donaldson, Josh",
-  "Trout, Mike", "Bregman, Alex", "Semien, Marcus", "LeMahieu, DJ", "Bogaerts, Xander",
-  "Chapman, Matt", "Springer, George", "Betts, Mookie", "Cruz, Nelson", "Devers, Rafael"
-)
-
-# List of 2019 Silver Sluggers (as they appear in CSV)
-silver_sluggers <- c(
-  "Greinke, Zack", "Realmuto, J.T.", "Freeman, Freddie", "Albies, Ozzie", "Rendon, Anthony", "Story, Trevor",
-  "Bellinger, Cody", "Yelich, Christian", "Acuña Jr., Ronald",
-  "Garver, Mitch", "Santana, Carlos", "LeMahieu, DJ", "Bregman, Alex", "Bogaerts, Xander",
-  "Betts, Mookie", "Trout, Mike", "Springer, George", "Cruz, Nelson"
-)
-
-#add flags for MVP and Silver Slugger
-batters_df <- batters_df %>%
-  mutate(
-    `Top Ten MVP` = `last_name, first_name` %in% mvp_candidates,
-    `Silver Slugger` = `last_name, first_name` %in% silver_sluggers
-  )
-
-# Top 10 CHASE zone hitters
-top_chase <- batters_df %>%
-  select(`Last, First` = `last_name, first_name`, runs_chase, runs_all, `Top Ten MVP`, `Silver Slugger`) %>%
-  arrange(desc(runs_chase)) %>%
-  slice_head(n = 10)
-
-# Top 10 WASTE zone hitters
-top_waste <- batters_df %>%
-  select(`Last, First` = `last_name, first_name`, runs_waste, runs_all, `Top Ten MVP`, `Silver Slugger`) %>%
-  arrange(desc(runs_waste)) %>%
-  slice_head(n = 10)
-
-# View results
-
-kable(top_waste, caption = "Top 10 Hitters in WASTE Zone") %>%
-  kable_styling(full_width = FALSE, position = "left", font_size = 12) %>%
-  column_spec(1:5, extra_css = "padding-right: 20px;")
-
-
-kable(top_chase, caption = "Top 10 Hitters in CHASE Zone") %>%
-  kable_styling(full_width = FALSE, position = "left", font_size = 12) %>%
-  column_spec(1:5, extra_css = "padding-right: 20px;")
-
-```
-
