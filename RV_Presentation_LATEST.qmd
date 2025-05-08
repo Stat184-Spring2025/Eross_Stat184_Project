@@ -1,6 +1,7 @@
 ---
 title: "Comparing MLB Run Value and Awards"
 author: "Andrew Eross, Owen Wassel, Nick McConnell"
+date: 05/07/2025
 format: pdf
 ---
 
@@ -18,7 +19,7 @@ The calculation for run value is also not public. We have an idea of what data s
 
 Run value is also calculated in each part of a hitter's zone. Depending on where the ball was pitched to the hitter, the associated run value may be attributed to the hitter's zone, shadow, chase, or waste run value. The image below shows where each of these zones are relative to the strike zone, as we will create visuals to compare hitters in different parts of the zone.
 
-ENTER IMAGE
+![Run Value Zones](runvaluezone.png)
 
 ## Research Questions
 
@@ -27,8 +28,9 @@ The reason why we want to use run value is to estimate the impact of a player's 
 -   1.) Are the best offensive players (in terms of run value) more likely to finish atop the MVP (most valuable player) voting?
 -   2.) Are other statistics (like WAR) a better predictor of who will place higher for MLB awards?
 -   3.) How does this change when we analyze an award like Silver Slugger, an award that disregards defense and base running?
+-   4.) Several secondary questions to follow later in the report.
 
-ENTER MORE
+
 
 # Data Provenance
 
@@ -206,7 +208,7 @@ To first tackle how well run value is related to MVP voting, we will plot a play
 
 The number of vote points is summed for each player, and the player with the most points is the winner.
 
-The @fig-nl-mvp-rv, plots the player's run value vs vote points for the NL (National League). We see a pretty strong, positive correlation between vote points and run value. Our predictions were correct, in that players with higher run values are more likely to get more votes for the award. This of course makes sense, as the league's most valuable players should be great offensive players.
+Figure 2 plots the player's run value vs vote points for the NL (National League). We see a pretty strong, positive correlation between vote points and run value. Our predictions were correct, in that players with higher run values are more likely to get more votes for the award. This of course makes sense, as the league's most valuable players should be great offensive players.
 
 The points represent each player who received MVP votes. Originally, the player's name was listed above the point, but this was changed to improve readability.
 
@@ -215,6 +217,8 @@ The points represent each player who received MVP votes. Originally, the player'
 #| warning: false
 #| message: false
 #| fig-cap: "Run Value vs NL MVP Vote Points"
+#| fig-width: 5
+#| fig-height: 3
 
 #create plot for run value vs NL MVP vote points
 # plotting from NL MVP data frame
@@ -245,13 +249,16 @@ rsq_nlmvp_rv<- summary(model_nlmvp_rv)$r.squared
 
 
 ```
-The line of best fit is also graphed, with a calculated R squared value of **`r round(rsq_nlmvp_rv, 3)`**. 
+The line of best fit is also graphed, with a calculated R squared value of **`r round(rsq_nlmvp_rv, 3)`**. This is repeated for American League vote getters below.
+
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
 #| fig-cap: "Run Value vs AL MVP Vote Points"
+#| fig-width: 5
+#| fig-height: 3
 library(tidyverse)
 library(ggplot2)
 
@@ -277,12 +284,18 @@ model_almvp_rv <- lm(Vote.Pts ~ runs_all, data = AL_MVP)
 rsq_almvp_rv<- summary(model_almvp_rv)$r.squared
 ```
 
-We repeated this process for the AL MVP vote getters, with the similar figure shown. This produced an R squared value of **`r round(rsq_almvp_rv, 3)`**. 
+This produced an R squared value of **`r round(rsq_almvp_rv, 3)`**. Both of these R squared values are decently strong, meaning there is a semi-strong, positive relationship between run value and vote points. Predicting who will win most valuable player based on run value alone is a decent strategy, but will not guarantee the correct ordering.
+
+We can compare this correlation to WAR (wins above replacement), a stat created by baseball reference to estimate the number of extra games a team would win when playing a certain player over the replacement level player. WAR, like run value, is theoretical, but is derived by less Statcast data but instead more counting data. A key distinction with WAR is that it includes defense and base running into its calculation, while run value does not. For the MVP award, it might seem ideal to use WAR since the most overall valuable player should be good at all parts of the game, so we will test if WAR is a better MVP predictor with this data set.
+
+Similar graphs are constructed below, showing WAR vs Vote Points with their line of best fit and R squared values. 
 
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-width: 5
+#| fig-height: 3
 #| fig-cap: "WAR vs NL MVP Vote Points"
 
 # similar approach to above, just now graphing for war vs vote points
@@ -307,14 +320,14 @@ model_nlmvp_war <- lm(Vote.Pts ~ WAR, data = NL_MVP)
 rsq_nlmvp_war<- summary(model_nlmvp_war)$r.squared
 
 ```
-The R-squared value for the NL MVP model using WAR is `r round(rsq_nlmvp_war, 3)`.
+The R-squared value for the NL MVP model using WAR is **`r round(rsq_nlmvp_war, 4)`.**
 
-
-The R-squared value for the AL MVP model using run value is `r round(rsq_almvp_rv, 3)`.
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-width: 5
+#| fig-height: 3
 #| fig-cap: "WAR vs AL MVP Vote Points"
 
 #same plot as above just change the x axis to war
@@ -338,12 +351,22 @@ model_almvp_war <- lm(Vote.Pts ~ WAR, data = AL_MVP)
 # calculate r squared value with model
 rsq_almvp_war<- summary(model_almvp_war)$r.squared
 ```
-The R-squared value for the AL MVP model using WAR is `r round(rsq_almvp_war, 3)`.
+The R-squared value for the AL MVP model using WAR is **`r round(rsq_almvp_war, 3)`.**
+
+While the R-squared values are very similar, they are slightly higher in each case for the WAR vs MVP models. This is a small sample size, so we would have to run this for several seasons for a more accurate conclusion, but my estimation is that WAR is a better predictor. This certainly makes sense because WAR includes other aspects of the game like base running and defense, so more well-rounded players have better chances of being deemed most valuable.
+
+Through this analysis, we did answer our first two research questions, concluding that, while run value is a solid estimator of who will win MVP, there exists better overall stats such as WAR.
+
+I have mentioned that WAR includes less offense in its derivations because it includes other aspects of the game, but I wanted to fully visualize that for the reader. The following heat map uses several popular counting and average stats that are deemed most essential for hitters, and graphs their correlation with each of run value and WAR. This is a good estimator of how much these statistics go into the derivation of the theoretical calclations WAR and run value.
+
 ```{r fig-map}
 #| echo: false
 #| warning: false
 #| message: false
+#| fig-width: 5
+#| fig-height: 3
 #| fig-cap: "WAR and RV Correlations"
+#| fig-pos: 'H'
 
 #this is for a heat map to show correlations between RV and War for offensive stats
 # this is beyond our in class curriculum so I researched the process of making a heat map
@@ -395,7 +418,9 @@ ggplot(Correlation_Long, aes(x = Var2, y = Var1, fill = value)) +
   # angle the x axis text for visual aesthetic
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-Given each silver slugger from the AL and NL, we want to see what each player's run value was. Here is a table that displays that information:
+As you can see, the correlations for each of the most popular batting stats (BA, OBP, SLG, OPS, HR, RBI) are less for WAR than they are for run value. This proves how run value is more of a pure offensive stat than WAR, and we can infer that WAR involves other parts of the game since it relies less on batting stats. This is the leading reason why WAR may be used more frequently when voting on who was the most valuable player in a season.
+
+After evaluating run value's affect on MVP, we will next do so for silver sluggers. Silver sluggers are awarded to the best hitter in each conference for each position. They are completely offensive awards, and are defense/base running independent. A stat like WAR might be less effective here because there is no need for weighing in non-hitting stats. Given each silver slugger from the AL and NL, we want to see what each player's run value was. Here is a table that displays that information:
 ```{r}
 #| echo: false
 #| warning: false
@@ -708,6 +733,23 @@ kable(top_waste, caption = "Top 10 Hitters in WASTE Zone") %>%
 
 
 ```
+# Conclusion
+
+Owen write conclusion here
+
+# References
+
+Awards and Honors. (2025). Baseball-Reference.com. 
+    https://www.baseball-reference.com/awards/
+
+
+Baseball Savant. (2025). Statcast Batting/Pitching Run Value Leaderboard. 
+   Baseballsavant.com. https://baseballsavant.mlb.com/swing-take.
+
+
+Major League Baseball. (2025). Statcast | Glossary. MLB.com. 
+    https://www.mlb.com/glossary/statcast.
+
 
 # Code Appendix
 
